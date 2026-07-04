@@ -1,7 +1,7 @@
 {
   "name": "stockflow-backend",
   "version": "1.0.0",
-  "description": "StockFlow - Multi-Warehouse Inventory & Order Management API",
+  "description": "StockFlow Warehouse Inventory & Order Management API",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

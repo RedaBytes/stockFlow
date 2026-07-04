@@ -1,9 +1,4 @@
--- =========================================================
--- StockFlow: Multi-Warehouse Inventory & Order Management
--- PostgreSQL DDL Schema
--- =========================================================
 
--- Clean slate (safe for dev re-runs)
 DROP TABLE IF EXISTS refresh_tokens CASCADE;
 DROP TABLE IF EXISTS stock_movements CASCADE;
 DROP TABLE IF EXISTS customer_order_items CASCADE;
@@ -22,17 +17,13 @@ DROP TYPE IF EXISTS po_status;
 DROP TYPE IF EXISTS co_status;
 DROP TYPE IF EXISTS movement_type;
 
--- =========================================================
--- ENUM TYPES
--- =========================================================
+
 CREATE TYPE user_role AS ENUM ('admin', 'manager', 'staff');
 CREATE TYPE po_status AS ENUM ('pending', 'approved', 'received', 'cancelled');
 CREATE TYPE co_status AS ENUM ('pending', 'fulfilled', 'cancelled');
 CREATE TYPE movement_type AS ENUM ('purchase_receipt', 'customer_fulfillment', 'adjustment');
 
--- =========================================================
--- USERS  (Authentication + Authorization)
--- =========================================================
+
 CREATE TABLE users (
     id              SERIAL PRIMARY KEY,
     name            VARCHAR(100)  NOT NULL,
@@ -45,9 +36,7 @@ CREATE TABLE users (
     updated_at      TIMESTAMPTZ   NOT NULL DEFAULT NOW()
 );
 
--- =========================================================
--- WAREHOUSES
--- =========================================================
+
 CREATE TABLE warehouses (
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(100) NOT NULL UNIQUE,
@@ -59,9 +48,7 @@ ALTER TABLE users
     ADD CONSTRAINT fk_users_warehouse
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE SET NULL;
 
--- =========================================================
--- SUPPLIERS
--- =========================================================
+
 CREATE TABLE suppliers (
     id              SERIAL PRIMARY KEY,
     name            VARCHAR(150) NOT NULL,
@@ -70,9 +57,7 @@ CREATE TABLE suppliers (
     created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
--- =========================================================
--- PRODUCTS
--- =========================================================
+
 CREATE TABLE products (
     id                  SERIAL PRIMARY KEY,
     sku                 VARCHAR(50)   NOT NULL UNIQUE,
@@ -84,9 +69,6 @@ CREATE TABLE products (
     updated_at          TIMESTAMPTZ   NOT NULL DEFAULT NOW()
 );
 
--- =========================================================
--- PRODUCT_SUPPLIERS (many-to-many: which suppliers provide which product)
--- =========================================================
 CREATE TABLE product_suppliers (
     product_id      INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     supplier_id     INTEGER NOT NULL REFERENCES suppliers(id) ON DELETE CASCADE,
@@ -94,9 +76,7 @@ CREATE TABLE product_suppliers (
     PRIMARY KEY (product_id, supplier_id)
 );
 
--- =========================================================
--- INVENTORY (stock level per product, per warehouse)
--- =========================================================
+
 CREATE TABLE inventory (
     product_id      INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     warehouse_id    INTEGER NOT NULL REFERENCES warehouses(id) ON DELETE CASCADE,
@@ -105,9 +85,7 @@ CREATE TABLE inventory (
     PRIMARY KEY (product_id, warehouse_id)
 );
 
--- =========================================================
--- PURCHASE ORDERS (business -> supplier, restocking)
--- =========================================================
+
 CREATE TABLE purchase_orders (
     id              SERIAL PRIMARY KEY,
     supplier_id     INTEGER NOT NULL REFERENCES suppliers(id),
@@ -126,9 +104,6 @@ CREATE TABLE purchase_order_items (
     unit_cost           NUMERIC(10,2) NOT NULL CHECK (unit_cost >= 0)
 );
 
--- =========================================================
--- CUSTOMER ORDERS (business -> customer, fulfillment)
--- =========================================================
 CREATE TABLE customer_orders (
     id              SERIAL PRIMARY KEY,
     customer_name   VARCHAR(150) NOT NULL,
@@ -148,9 +123,7 @@ CREATE TABLE customer_order_items (
     unit_price          NUMERIC(10,2) NOT NULL CHECK (unit_price >= 0)
 );
 
--- =========================================================
--- STOCK MOVEMENTS (full audit trail of every inventory change)
--- =========================================================
+
 CREATE TABLE stock_movements (
     id              SERIAL PRIMARY KEY,
     product_id      INTEGER NOT NULL REFERENCES products(id),
@@ -161,10 +134,6 @@ CREATE TABLE stock_movements (
     performed_by    INTEGER NOT NULL REFERENCES users(id),
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
--- =========================================================
--- REFRESH TOKENS (JWT refresh/rotation support)
--- =========================================================
 CREATE TABLE refresh_tokens (
     id          SERIAL PRIMARY KEY,
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -174,9 +143,7 @@ CREATE TABLE refresh_tokens (
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- =========================================================
--- INDEXES for common lookups
--- =========================================================
+
 CREATE INDEX idx_inventory_warehouse ON inventory(warehouse_id);
 CREATE INDEX idx_products_sku ON products(sku);
 CREATE INDEX idx_po_status ON purchase_orders(status);
