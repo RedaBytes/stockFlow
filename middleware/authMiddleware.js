@@ -1,6 +1,4 @@
-// middleware/authMiddleware.js
-// authenticate: verifies the access token and attaches req.user
-// authorize:    restricts a route to specific roles (RBAC), used on top of authenticate
+
 const { verifyAccessToken } = require('../utils/jwt');
 
 function authenticate(req, res, next) {
