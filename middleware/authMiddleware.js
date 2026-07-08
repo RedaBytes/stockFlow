@@ -1,4 +1,3 @@
-
 const { verifyAccessToken } = require('../utils/jwt');
 
 function authenticate(req, res, next) {
@@ -10,7 +9,7 @@ function authenticate(req, res, next) {
   const token = header.split(' ')[1];
   try {
     const payload = verifyAccessToken(token);
-    req.user = { id: payload.sub, role: payload.role, warehouseId: payload.warehouseId };
+    req.user = { id: payload.sub, role: payload.role };
     return next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid or expired access token' });

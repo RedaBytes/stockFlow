@@ -1,12 +1,11 @@
-
 const db = require('../config/db');
 
-async function createUser({ name, email, passwordHash, role = 'staff', warehouseId = null }) {
+async function createUser({ name, email, passwordHash, role = 'staff' }) {
   const result = await db.query(
-    `INSERT INTO users (name, email, password_hash, role, warehouse_id)
-     VALUES ($1, $2, $3, $4, $5)
-     RETURNING id, name, email, role, warehouse_id, is_active, created_at`,
-    [name, email, passwordHash, role, warehouseId]
+    `INSERT INTO users (name, email, password_hash, role)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, name, email, role, created_at`,
+    [name, email, passwordHash, role]
   );
   return result.rows[0];
 }
@@ -18,8 +17,7 @@ async function findByEmail(email) {
 
 async function findById(id) {
   const result = await db.query(
-    `SELECT id, name, email, role, warehouse_id, is_active, created_at
-     FROM users WHERE id = $1`,
+    `SELECT id, name, email, role, created_at FROM users WHERE id = $1`,
     [id]
   );
   return result.rows[0] || null;

@@ -1,6 +1,0 @@
-{"level":"info","message":"StockFlow API listening on port http://localhost:5000","service":"stockflow-api","timestamp":"2026-07-04 16:36:10"}
-{"level":"info","message":"StockFlow API listening on port http://localhost:5000","service":"stockflow-api","timestamp":"2026-07-04 16:36:13"}
-{"level":"info","message":"StockFlow API listening on port http://localhost:3001","service":"stockflow-api","timestamp":"2026-07-04 16:36:38"}
-{"durationMs":25,"ip":"::1","level":"info","message":"HTTP request","method":"GET","path":"/api/health","service":"stockflow-api","status":200,"timestamp":"2026-07-04 16:36:59","userId":null}
-{"level":"info","message":"StockFlow API listening on port http://localhost:5000","service":"stockflow-api","timestamp":"2026-07-04 16:42:01"}
-{"level":"info","message":"StockFlow API listening on port http://localhost:5000","service":"stockflow-api","timestamp":"2026-07-06 00:26:16"}
