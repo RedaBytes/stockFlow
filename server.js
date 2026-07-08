@@ -6,6 +6,7 @@ const errorHandler = require('./middleware/errorHandler');
 const { generalLimiter } = require('./middleware/rateLimiter');
 
 const authRoutes = require('./router/authRouter');
+const productRoutes = require ('./router/productRouter');
 
 
 const app = express();
