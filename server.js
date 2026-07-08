@@ -8,6 +8,7 @@ const { generalLimiter } = require('./middleware/rateLimiter');
 const authRoutes = require('./router/authRouter');
 const productRoutes = require ('./router/productRouter');
 const supplierRoutes = require('./router/supplierRouter');
+const inventoryRoutes = require('./router/inventoryRouter');
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/suppliers', supplierRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 
 app.use('/api', (req, res) => res.status(404).json({ message: 'Route not found' }));
