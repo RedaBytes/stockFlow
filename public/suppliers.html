@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockFlow · Suppliers</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+
+    <main class="main">
+      <div class="page-header">
+        <div>
+          <h1>Suppliers</h1>
+          <p>Manage supplier contacts.</p>
+        </div>
+        <button class="btn" id="new-supplier-btn">+ New supplier</button>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Email</th><th>Phone</th><th></th></tr>
+          </thead>
+          <tbody id="suppliers-body">
+            <tr class="empty-row"><td colspan="4">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="supplier-modal">
+    <div class="modal">
+      <h2 id="modal-title">New supplier</h2>
+      <p class="modal-sub">Name is required; contact details are optional.</p>
+      <form id="supplier-form">
+        <input type="hidden" id="supplier-id">
+        <label for="supplier-name">Name</label>
+        <input type="text" id="supplier-name" required>
+
+        <label for="supplier-email">Email</label>
+        <input type="email" id="supplier-email">
+
+        <label for="supplier-phone">Phone</label>
+        <input type="text" id="supplier-phone">
+
+        <div id="supplier-error"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancel-supplier-btn">Cancel</button>
+          <button type="submit" class="btn" id="save-supplier-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/suppliers.js"></script>
+</body>
+</html>
