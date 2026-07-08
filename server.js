@@ -9,6 +9,7 @@ const authRoutes = require('./router/authRouter');
 const productRoutes = require ('./router/productRouter');
 const supplierRoutes = require('./router/supplierRouter');
 const inventoryRoutes = require('./router/inventoryRouter');
+const dashboardRoutes = require('./router/dashboardRouter');
 
 
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 
 app.use('/api', (req, res) => res.status(404).json({ message: 'Route not found' }));

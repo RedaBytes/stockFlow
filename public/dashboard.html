@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockFlow · Dashboard</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+
+    <main class="main">
+      <div class="page-header">
+        <div>
+          <h1>Dashboard</h1>
+          <p>A quick snapshot of inventory health.</p>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="label">Total Products</div>
+          <div class="value" id="stat-products">–</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Total Suppliers</div>
+          <div class="value" id="stat-suppliers">–</div>
+        </div>
+        <div class="stat-card warn">
+          <div class="label">Low Stock Items</div>
+          <div class="value" id="stat-lowstock">–</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Low stock products <span id="threshold-label"></span></div>
+        <table>
+          <thead>
+            <tr><th>Product</th><th>SKU</th><th class="num">Quantity on hand</th></tr>
+          </thead>
+          <tbody id="lowstock-body">
+            <tr class="empty-row"><td colspan="3">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script>
+    Auth.requireAuth();
+    renderSidebar('dashboard');
+
+    async function load() {
+      try {
+        const data = await Api.getDashboardSummary();
+        document.getElementById('stat-products').textContent = data.totalProducts;
+        document.getElementById('stat-suppliers').textContent = data.totalSuppliers;
+        document.getElementById('stat-lowstock').textContent = data.lowStockProducts.length;
+        document.getElementById('threshold-label').textContent = `(below ${data.lowStockThreshold} units)`;
+
+        const body = document.getElementById('lowstock-body');
+        if (data.lowStockProducts.length === 0) {
+          body.innerHTML = '<tr class="empty-row"><td colspan="3">Nothing low on stock right now.</td></tr>';
+        } else {
+          body.innerHTML = data.lowStockProducts.map((p) => `
+            <tr>
+              <td>${escapeHtml(p.name)}</td>
+              <td>${escapeHtml(p.sku)}</td>
+              <td class="num"><span class="badge low">${p.quantity}</span></td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>
