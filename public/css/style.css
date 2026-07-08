@@ -262,7 +262,7 @@ table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
 th, td { text-align: left; padding: 10px 18px; border-bottom: 1px solid var(--line); }
 th { color: var(--ink-soft); font-weight: 600; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.03em; background: #fafbfb; }
 tr:last-child td { border-bottom: none; }
-td.num { text-align: right; font-variant-numeric: tabular-nums; }
+th.num, td.num{ text-align: right; font-variant-numeric: tabular-nums; }
 
 .badge {
   display: inline-block;

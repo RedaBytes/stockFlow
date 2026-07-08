@@ -45,7 +45,7 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  if (response.status === 401) {
+  if (response.status === 401 && token) {
     Auth.clearSession();
     window.location.href = '/index.html';
     throw new Error('Session expired');
