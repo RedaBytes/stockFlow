@@ -23,8 +23,66 @@ async function findById(id) {
   return result.rows[0] || null;
 }
 
+async function setResetToken(userId, tokenHash, expiresAt) {
+  await db.query(
+    `UPDATE users SET reset_token_hash = $1, reset_token_expires = $2 WHERE id = $3`,
+    [tokenHash, expiresAt, userId]
+  );
+}
+
+async function findByResetTokenHash(tokenHash) {
+  const result = await db.query(
+    `SELECT * FROM users
+     WHERE reset_token_hash = $1 AND reset_token_expires > NOW()`,
+    [tokenHash]
+  );
+  return result.rows[0] || null;
+}
+
+async function updatePasswordAndClearReset(userId, passwordHash) {
+  await db.query(
+    `UPDATE users
+     SET password_hash = $1, reset_token_hash = NULL, reset_token_expires = NULL
+     WHERE id = $2`,
+    [passwordHash, userId]
+  );
+}
+
+async function findAll() {
+  const result = await db.query(
+    `SELECT id, name, email, role, created_at FROM users ORDER BY created_at ASC`
+  );
+  return result.rows;
+}
+
+async function updateRole(userId, role) {
+  const result = await db.query(
+    `UPDATE users SET role = $1 WHERE id = $2
+     RETURNING id, name, email, role, created_at`,
+    [role, userId]
+  );
+  return result.rows[0] || null;
+}
+
+async function countAdmins() {
+  const result = await db.query(`SELECT COUNT(*)::int AS count FROM users WHERE role = 'admin'`);
+  return result.rows[0].count;
+}
+
+async function countSuperAdmins() {
+  const result = await db.query(`SELECT COUNT(*)::int AS count FROM users WHERE role = 'super_admin'`);
+  return result.rows[0].count;
+}
+
 module.exports = {
   createUser,
   findByEmail,
   findById,
+  findAll,
+  updateRole,
+  countAdmins,
+  countSuperAdmins,
+  setResetToken,
+  findByResetTokenHash,
+  updatePasswordAndClearReset,
 };

@@ -1,9 +1,15 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const userModel = require('../model/userModel');
 const { generateAccessToken } = require('../utils/jwt');
 
 const SALT_ROUNDS = 12;
+const RESET_TOKEN_EXPIRES_MIN = Number(process.env.RESET_TOKEN_EXPIRES_MIN) || 30;
+
+function hashToken(token) {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
 
 async function register(req, res, next) {
   try {
@@ -64,5 +70,9 @@ async function me(req, res, next) {
     return next(err);
   }
 }
+
+
+
+
 
 module.exports = { register, login, me };

@@ -15,6 +15,17 @@ const loginRules = [
   body('password').notEmpty().withMessage('Password is required'),
 ];
 
+const forgotPasswordRules = [
+  body('email').trim().isEmail().withMessage('A valid email is required').normalizeEmail(),
+];
+
+const resetPasswordRules = [
+  body('token').trim().notEmpty().withMessage('Reset token is required'),
+  body('password')
+    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+    .matches(/\d/).withMessage('Password must contain at least one number'),
+];
+
 function validate(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -23,4 +34,4 @@ function validate(req, res, next) {
   next();
 }
 
-module.exports = { registerRules, loginRules, validate };
+module.exports = { registerRules, loginRules, forgotPasswordRules, resetPasswordRules, validate };

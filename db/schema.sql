@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TYPE IF EXISTS user_role;
 DROP TYPE IF EXISTS movement_type;
 
-CREATE TYPE user_role AS ENUM ('admin', 'staff');
+CREATE TYPE user_role AS ENUM ('super_admin', 'admin', 'staff');
 CREATE TYPE movement_type AS ENUM ('IN', 'OUT');
 
 CREATE TABLE users (
@@ -17,6 +17,8 @@ CREATE TABLE users (
     email           VARCHAR(150)  NOT NULL UNIQUE,
     password_hash   VARCHAR(255)  NOT NULL,
     role            user_role     NOT NULL DEFAULT 'staff',
+    reset_token_hash     VARCHAR(255),
+    reset_token_expires  TIMESTAMPTZ,
     created_at      TIMESTAMPTZ   NOT NULL DEFAULT NOW()
 );
 
@@ -54,3 +56,4 @@ CREATE TABLE stock_movements (
 
 CREATE INDEX idx_products_sku ON products(sku);
 CREATE INDEX idx_stock_movements_product ON stock_movements(product_id);
+CREATE INDEX idx_users_reset_token_hash ON users(reset_token_hash);

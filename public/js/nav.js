@@ -9,6 +9,9 @@ function renderSidebar(activePage) {
     { key: 'suppliers', href: '/suppliers.html', label: 'Suppliers' },
     { key: 'movements', href: '/movements.html', label: 'Stock Movements' },
   ];
+  if (Auth.isAdmin()) {
+    links.push({ key: 'users', href: '/users.html', label: 'Users' });
+  }
 
   root.innerHTML = `
     <div class="brand-mark"><span class="dot"></span><span>StockFlow</span></div>

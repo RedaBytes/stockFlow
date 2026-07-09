@@ -21,7 +21,11 @@ const Auth = {
   },
   isAdmin() {
     const user = this.getUser();
-    return Boolean(user && user.role === 'admin');
+    return Boolean(user && (user.role === 'admin' || user.role === 'super_admin'));
+  },
+  isSuperAdmin() {
+    const user = this.getUser();
+    return Boolean(user && user.role === 'super_admin');
   },
   requireAuth() {
     if (!this.isLoggedIn()) {
@@ -71,6 +75,8 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
 const Api = {
   login: (email, password) => apiRequest('/auth/login', { method: 'POST', body: { email, password } }),
   register: (name, email, password) => apiRequest('/auth/register', { method: 'POST', body: { name, email, password } }),
+  forgotPassword: (email) => apiRequest('/auth/forgot-password', { method: 'POST', body: { email } }),
+  resetPassword: (token, password) => apiRequest('/auth/reset-password', { method: 'POST', body: { token, password } }),
 
   getDashboardSummary: () => apiRequest('/dashboard/summary'),
 
@@ -87,6 +93,9 @@ const Api = {
   getMovements: () => apiRequest('/inventory/movements'),
   stockIn: (productId, quantity) => apiRequest('/inventory/stock-in', { method: 'POST', body: { productId, quantity } }),
   stockOut: (productId, quantity) => apiRequest('/inventory/stock-out', { method: 'POST', body: { productId, quantity } }),
+
+  getUsers: () => apiRequest('/users'),
+  updateUserRole: (id, role) => apiRequest(`/users/${id}/role`, { method: 'PATCH', body: { role } }),
 };
 
 function showToast(message, isError = false) {

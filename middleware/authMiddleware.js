@@ -16,12 +16,19 @@ function authenticate(req, res, next) {
   }
 }
 
+
+const ROLE_HIERARCHY = {
+  super_admin: ['super_admin', 'admin'],
+};
+
 function authorize(...allowedRoles) {
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ message: 'Not authenticated' });
     }
-    if (!allowedRoles.includes(req.user.role)) {
+    const effectiveRoles = ROLE_HIERARCHY[req.user.role] || [req.user.role];
+    const hasAccess = effectiveRoles.some((role) => allowedRoles.includes(role));
+    if (!hasAccess) {
       return res.status(403).json({ message: 'You do not have permission to perform this action' });
     }
     return next();
